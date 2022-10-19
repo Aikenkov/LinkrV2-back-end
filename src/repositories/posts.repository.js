@@ -1,8 +1,8 @@
 import connection from "../database/database.js";
 
 export async function getLastsPosts() {
-  return connection.query(
-    `
+    return connection.query(
+        `
     SELECT
       users.username,
       pictures.picture_uri AS picture,
@@ -18,5 +18,7 @@ export async function getLastsPosts() {
     ORDER BY posts.created_at DESC
     LIMIT 20;
   `
-  );
+    );
 }
+
+export async function insertPost() {}
