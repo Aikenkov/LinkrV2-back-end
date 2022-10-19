@@ -1,5 +1,5 @@
-import { getSessionByToken } from "../repositories/sessions.repository";
-import { STATUS_CODE } from "../enums/statusCode";
+import { getSessionByToken } from "../repositories/sessions.repository.js";
+import { STATUS_CODE } from "../enums/statusCode.js";
 
 export async function validateToken(req, res, next) {
   const token = req.headers.authorization?.replace("Bearer ", "");
@@ -7,7 +7,7 @@ export async function validateToken(req, res, next) {
 
   try {
     if (token) {
-      session = await getSessionByToken(token);
+      session = (await getSessionByToken(token)).rows[0];
     }
 
     if (!token || !session) {
