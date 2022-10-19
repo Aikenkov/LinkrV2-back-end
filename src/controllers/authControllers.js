@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import connection from '../database/database.js';
+import {v4 as uuid} from "uuid";
 import { STATUS_CODE } from '../enums/statusCode.js';
 
 export async function postSignUp(req,res){
@@ -56,4 +57,46 @@ export async function postSignUp(req,res){
         
     return res.sendStatus(STATUS_CODE.SERVER_ERROR);
     }
+}
+
+export async function postSignIn (req,res){
+    try {
+        const { email, password} = req.body;
+    const verifyUser = await connection .query(`
+        SELECT * FROM
+            users
+        WHERE 
+            email=$1;
+    `,[email]);
+
+    const validUser = verifyUser.rows[0];
+    if(verifyUser.rows.length === 0){
+        return res.sendStatus(STATUS_CODE.UNAUTHORIZED)
+    }
+
+    const passwordValid = bcrypt.compareSync(password,validUser.password);
+
+   
+    if(verifyUser.rows.length !=0 && passwordValid){
+        const token= uuid();
+        await connection.query(`
+            INSERT INTO 
+                sessions(user_id, token)
+            VALUES 
+                ($1,$2);
+        `,[validUser.id, token]
+        );
+        return res.status(STATUS_CODE.OK).send({token:token, 
+                                                username:validUser.username}
+                                            );
+    }else {
+        return res.status(STATUS_CODE.UNAUTHORIZED).send('email ou senha inválidos')
+    }
+
+    } catch (error) {
+        return res.sendStatus(500)
+    }
+    
+
+    
 }
