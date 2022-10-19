@@ -6,6 +6,11 @@ import { validateSchema } from "../middlewares/schemaValidatorMiddleware.js";
 
 const postRouter = Router();
 
-postRouter.post("/publish", validateSchema(publishSchema), publishPost);
+postRouter.post(
+    "/publish",
+    /* validateToken, */
+    validateSchema(publishSchema),
+    publishPost
+);
 
 export { postRouter };
