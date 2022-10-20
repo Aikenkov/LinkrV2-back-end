@@ -5,6 +5,6 @@ import { getTimeline, getUserPosts } from "../controllers/timelineController.js"
 const timelineRouter = Router();
 
 timelineRouter.get("/timeline", validateToken, getTimeline);
-timelineRouter.get("/users/:id", getUserPosts);
+timelineRouter.get("/user/:id", getUserPosts);
 
 export {timelineRouter};
