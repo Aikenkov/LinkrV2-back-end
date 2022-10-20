@@ -4,6 +4,7 @@ export async function getLastsPosts() {
   return connection.query(
     `
     SELECT
+      posts.id,
       users.username,
       pictures.picture_uri AS picture,
       posts.text, 
@@ -14,7 +15,7 @@ export async function getLastsPosts() {
       ON posts.user_id = users.id 
     JOIN pictures 
       ON pictures.user_id = users.id
-    GROUP BY users.username, pictures.picture_uri, posts.text, posts.link, posts.created_at
+    GROUP BY posts.id,users.username, pictures.picture_uri, posts.text, posts.link, posts.created_at
     ORDER BY posts.created_at DESC
     LIMIT 20;
   `
