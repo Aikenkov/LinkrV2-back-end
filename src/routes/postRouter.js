@@ -8,7 +8,7 @@ const postRouter = Router();
 
 postRouter.post(
     "/publish",
-    /* validateToken, */
+    validateToken,
     validateSchema(publishSchema),
     publishPost
 );

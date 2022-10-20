@@ -1,4 +1,5 @@
 import connection from "../database/database.js";
+import { getSessionByToken } from "./sessions.repository.js";
 
 export async function getLastsPosts() {
     return connection.query(
@@ -21,7 +22,9 @@ export async function getLastsPosts() {
     );
 }
 
-export async function insertPost() {}
+export async function insertPost({ text, link, token }) {
+    const user = await getSessionByToken(token);
+}
 
 export async function getPostsByUserId(id) {
     return connection.query(
