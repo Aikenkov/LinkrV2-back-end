@@ -71,9 +71,8 @@ export async function postSignUp(req, res) {
 
 export async function postSignIn(req, res) {
     try {
-        const { email, password } = req.body;
-        const verifyUser = await connection.query(
-            `
+        const { email, password} = req.body;
+    const verifyUser = await connection.query(`
         SELECT * FROM
             users
         WHERE 
@@ -82,10 +81,16 @@ export async function postSignIn(req, res) {
             [email]
         );
 
-        const validUser = verifyUser.rows[0];
-        if (verifyUser.rows.length === 0) {
-            return res.sendStatus(STATUS_CODE.UNAUTHORIZED);
-        }
+    const validUser = verifyUser.rows[0];
+    if(verifyUser.rows.length === 0){
+        return res.sendStatus(STATUS_CODE.UNAUTHORIZED)
+    }
+    const userImage = await connection.query(`
+        SELECT picture_uri FROM
+            pictures
+        WHERE 
+            user_id = $1;
+    `,[validUser.id])
 
         const passwordValid = bcrypt.compareSync(password, validUser.password);
 
@@ -96,18 +101,17 @@ export async function postSignIn(req, res) {
             INSERT INTO 
                 sessions(user_id, token)
             VALUES 
-                ($1, $2);
-        `,
-                [validUser.id, token]
-            );
-            return res
-                .status(STATUS_CODE.OK)
-                .send({ token: token, username: validUser.username });
-        } else {
-            return res
-                .status(STATUS_CODE.UNAUTHORIZED)
-                .send("email ou senha inválidos");
-        }
+                ($1,$2);
+        `,[validUser.id, token]
+        );
+        return res.status(STATUS_CODE.OK).send({token:token, 
+                                                username:validUser.username,
+                                                url: userImage.rows[0].picture_uri}
+                                            );
+    }else {
+        return res.status(STATUS_CODE.UNAUTHORIZED).send('email ou senha inválidos')
+    }
+
     } catch (error) {
         return res.sendStatus(500);
     }
