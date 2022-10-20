@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { validateToken } from "../middlewares/authMiddleware.js";
 import {
-  getMetadata,
-  getTimeline,
-  getUserPosts,
+    getMetadata,
+    getTimeline,
+    getUserPosts,
 } from "../controllers/timelineController.js";
 import { validateSchema } from "../middlewares/schemaValidatorMiddleware.js";
 import { urlSchema } from "../schemas/urlSchema.js";

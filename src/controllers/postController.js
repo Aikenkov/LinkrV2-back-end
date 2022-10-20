@@ -33,7 +33,7 @@ export async function publishPost(req, res) {
             }
         });
 
-        return res.status(STATUS_CODE.OK).send("ok");
+        return res.status(STATUS_CODE.CREATED).send("created");
     } catch (err) {
         console.error(err);
         return res.sendStatus(STATUS_CODE.SERVER_ERROR);
