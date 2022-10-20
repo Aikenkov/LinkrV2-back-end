@@ -15,15 +15,16 @@ export async function getLastsPosts() {
       ON posts.user_id = users.id 
     JOIN pictures 
       ON pictures.user_id = users.id
-    GROUP BY posts.id,users.username, pictures.picture_uri, posts.text, posts.link, posts.created_at
-    ORDER BY posts.created_at DESC
+    GROUP BY posts.id, users.username, pictures.picture_uri, posts.text, posts.link, posts.created_at
+    ORDER BY posts.id DESC
     LIMIT 20;
   `
   );
 }
 
-export async function getPostsByUserId(id){
-  return connection.query(`
+export async function getPostsByUserId(id) {
+  return connection.query(
+    `
   SELECT
   users.username,
   pictures.picture_uri AS picture,
@@ -39,5 +40,15 @@ export async function getPostsByUserId(id){
   GROUP BY users.username, pictures.picture_uri, posts.text, posts.link, posts.created_at
   ORDER BY posts.created_at DESC
   LIMIT 20;
-  `,[id]);
+  `,
+    [id]
+  );
+}
+
+export async function getPostById(id) {
+  return connection.query(`SELECT * FROM posts WHERE id=$1;`, [id]);
+}
+
+export async function deletePostById(id) {
+  return connection.query(`DELETE FROM posts WHERE id=$1;`, [id]);
 }
