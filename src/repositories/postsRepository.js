@@ -1,5 +1,4 @@
 import connection from "../database/database.js";
-import { getSessionByToken } from "./sessions.repository.js";
 
 export async function getLastsPosts() {
     return connection.query(
@@ -17,14 +16,19 @@ export async function getLastsPosts() {
     JOIN pictures 
       ON pictures.user_id = users.id
     GROUP BY posts.id,users.username, pictures.picture_uri, posts.text, posts.link, posts.created_at
-    ORDER BY posts.created_at DESC
+    ORDER BY posts.id DESC
     LIMIT 20;
   `
     );
 }
 
-export async function insertPost({ text, link, token }) {
-    const user = await getSessionByToken(token);
+export async function insertPost(text, link, id) {
+    return await connection.query(
+        `
+    INSERT INTO posts ("user_id", "text", "link") Values ($1, $2, $3)
+    `,
+        [id, text, link]
+    );
 }
 
 export async function getPostsByUserId(id) {
