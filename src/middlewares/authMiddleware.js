@@ -1,4 +1,4 @@
-import { getSessionByToken } from "../repositories/sessions.repository.js";
+import { getSessionByToken } from "../repositories/sessionsRepository.js";
 import { STATUS_CODE } from "../enums/statusCode.js";
 
 export async function validateToken(req, res, next) {
