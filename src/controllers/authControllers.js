@@ -62,7 +62,7 @@ export async function postSignUp(req,res){
 export async function postSignIn (req,res){
     try {
         const { email, password} = req.body;
-    const verifyUser = await connection .query(`
+    const verifyUser = await connection.query(`
         SELECT * FROM
             users
         WHERE 
@@ -73,6 +73,12 @@ export async function postSignIn (req,res){
     if(verifyUser.rows.length === 0){
         return res.sendStatus(STATUS_CODE.UNAUTHORIZED)
     }
+    const userImage = await connection.query(`
+        SELECT picture_uri FROM
+            pictures
+        WHERE 
+            user_id = $1;
+    `,[validUser.id])
 
     const passwordValid = bcrypt.compareSync(password,validUser.password);
 
@@ -87,7 +93,8 @@ export async function postSignIn (req,res){
         `,[validUser.id, token]
         );
         return res.status(STATUS_CODE.OK).send({token:token, 
-                                                username:validUser.username}
+                                                username:validUser.username,
+                                                url: userImage.rows[0].picture_uri}
                                             );
     }else {
         return res.status(STATUS_CODE.UNAUTHORIZED).send('email ou senha inválidos')
