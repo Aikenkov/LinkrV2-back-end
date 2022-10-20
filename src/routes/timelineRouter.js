@@ -12,6 +12,6 @@ const timelineRouter = Router();
 
 timelineRouter.get("/timeline", validateToken, getTimeline);
 timelineRouter.post("/metadata", validateSchema(urlSchema), getMetadata);
-timelineRouter.get("/users/:id", getUserPosts);
+timelineRouter.get("/user/:id", getUserPosts);
 
 export { timelineRouter };
