@@ -4,6 +4,7 @@ import {
   getPostsByUserId,
   deletePostById,
   getPostById,
+  editPostById,
 } from "../repositories/postsRepository.js";
 import urlMetadata from "url-metadata";
 
@@ -77,6 +78,31 @@ export async function deletePost(req, res) {
     await deletePostById(id);
 
     return res.sendStatus(STATUS_CODE.NO_CONTENT);
+  } catch (err) {
+    console.error(err);
+    return res.sendStatus(STATUS_CODE.SERVER_ERROR);
+  }
+}
+
+export async function editPost(req, res) {
+  const { id } = req.params;
+  const { text } = req.body;
+  const { user } = res.locals;
+
+  try {
+    const post = (await getPostById(id)).rows[0];
+
+    if (!post) {
+      return res.sendStatus(STATUS_CODE.NOT_FOUND);
+    }
+
+    if (post.user_id !== user) {
+      return res.sendStatus(STATUS_CODE.UNAUTHORIZED);
+    }
+
+    await editPostById(text, id);
+
+    return res.sendStatus(STATUS_CODE.CREATED);
   } catch (err) {
     console.error(err);
     return res.sendStatus(STATUS_CODE.SERVER_ERROR);
