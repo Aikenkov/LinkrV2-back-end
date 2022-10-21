@@ -7,6 +7,11 @@ import {
 
 export async function getPostLikes(req, res) {
     const { post_id } = req.params;
+
+    if (!post_id) {
+        return res.sendStatus(STATUS_CODE.UNPROCESSABLE_ENTITY);
+    }
+
     try {
         const likes = await getLikesByPostId(post_id);
         return res.status(STATUS_CODE.OK).send(likes.rows);
@@ -18,8 +23,12 @@ export async function getPostLikes(req, res) {
 
 export async function insertLike(req, res) {
     const user_id = res.locals.user;
-
     const { post_id } = req.params;
+
+    if (!post_id) {
+        return res.sendStatus(STATUS_CODE.UNPROCESSABLE_ENTITY);
+    }
+
     try {
         await insertLikeByPostId(post_id, user_id);
         return res.status(STATUS_CODE.CREATED).send("ok");
@@ -31,8 +40,12 @@ export async function insertLike(req, res) {
 
 export async function removeLike(req, res) {
     const user_id = res.locals.user;
-
     const { post_id } = req.params;
+
+    if (!post_id) {
+        return res.sendStatus(STATUS_CODE.UNPROCESSABLE_ENTITY);
+    }
+
     try {
         await removeUserLike(post_id, user_id);
         return res.status(STATUS_CODE.OK).send("unliked");
