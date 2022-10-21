@@ -1,9 +1,10 @@
-import { validateToken } from "../middlewares/authMiddleware";
+import { Router } from "express";
+import { validateToken } from "../middlewares/authMiddleware.js";
 import {
     getPostLikes,
     insertLike,
     removeLike,
-} from "../controllers/likesController";
+} from "../controllers/likesController.js";
 
 const likesRouter = Router();
 
