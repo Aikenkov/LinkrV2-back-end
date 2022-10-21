@@ -10,3 +10,5 @@ const likesRouter = Router();
 likesRouter.get("/likes", getPostLikes);
 likesRouter.post("/likes", validateToken, insertLike);
 likesRouter.delete("/likes", validateToken, removeLike);
+
+export { likesRouter };
