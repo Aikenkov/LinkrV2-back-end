@@ -5,6 +5,7 @@ export async function getLastsPosts() {
     `
     SELECT
       posts.id,
+      posts.user_id,
       users.username,
       pictures.picture_uri AS picture,
       posts.text, 
