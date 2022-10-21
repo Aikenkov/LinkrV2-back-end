@@ -7,8 +7,8 @@ import {
 
 const likesRouter = Router();
 
-likesRouter.get("/likes", getPostLikes);
-likesRouter.post("/likes", validateToken, insertLike);
-likesRouter.delete("/likes", validateToken, removeLike);
+likesRouter.get("/likes/:post_id", getPostLikes);
+likesRouter.post("/likes/:post_id", validateToken, insertLike);
+likesRouter.delete("/likes/:post_id", validateToken, removeLike);
 
 export { likesRouter };
