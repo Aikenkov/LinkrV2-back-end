@@ -4,11 +4,10 @@ import { STATUS_CODE } from "../enums/statusCode.js";
 export async function getUsers(req,res){
 
     try {
-            console.log('entrei no serach')
         const usernameRegistered = req.query.name;
-        console.log(usernameRegistered, '****');
+
         if(usernameRegistered){
-            console.log('entrei no if')
+
         const registeredUsers = await connection.query(`
             SELECT username FROM 
                 users 
@@ -18,7 +17,7 @@ export async function getUsers(req,res){
                 lower($1);
         `,[`%${usernameRegistered}%`]
         );
-        console.log(registeredUsers, '6465465')
+        
         return res.status(STATUS_CODE.OK).send(registeredUsers.rows)
     }else{ 
         return res.status(STATUS_CODE.NOT_FOUND).send('usuário não encontrado')
