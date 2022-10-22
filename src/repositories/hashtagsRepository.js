@@ -9,6 +9,7 @@ export async function getTrending() {
      GROUP BY hashtags.tag,hashtags.id
      ORDER BY visits DESC;`);
 }
+
 export async function insertHashtags(tag) {
     await connection.query(
         `
@@ -44,4 +45,16 @@ export async function insertHashtagsPosts(hashtag_id, post_id) {
     `,
         [post_id, hashtag_id]
     );
+}
+
+export async function getPostsByTag(tag){
+    return connection.query(`
+    SELECT posts.text, posts.id, posts.link, users.username, pictures.picture_uri AS picture, posts.created_at AS time
+    FROM posts 
+    JOIN posts_hashtags ON posts_hashtags.post_id = posts.id 
+    JOIN hashtags ON hashtags.id = posts_hashtags.hastag_id
+    JOIN users ON users.id = posts.user_id
+    JOIN pictures ON pictures.user_id = users.id
+    WHERE hashtags.tag = $1
+    GROUP BY posts.id,users.id,pictures.picture_uri,posts.link, posts.created_at`,[tag]);
 }
