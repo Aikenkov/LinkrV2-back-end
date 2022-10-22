@@ -22,12 +22,14 @@ export async function publishPost(req, res) {
         const lastpost = (await getLastsPosts()).rows[0];
 
         await tags.forEach(async (tag) => {
-            const tagid = await getHashtag(tag);
+            const tagid = await getHashtag(tag.replace("#", ""));
+
+            console.log(tag.replace("#", ""));
 
             if (tagid.rowCount > 0) {
                 insertHashtagsPosts(tagid.rows[0].id, lastpost.id);
             } else {
-                insertHashtags(tag);
+                insertHashtags(tag.replace("#", ""));
                 const lasttag = (await getLastsHashtags()).rows[0];
                 insertHashtagsPosts(lasttag.id, lastpost.id);
             }
@@ -39,4 +41,3 @@ export async function publishPost(req, res) {
         return res.sendStatus(STATUS_CODE.SERVER_ERROR);
     }
 }
-
