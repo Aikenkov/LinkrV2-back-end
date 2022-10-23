@@ -6,6 +6,7 @@ import {
   getPostById,
   editPostById,
   deletePostHashtagById,
+  deleteLikesByPostId,
 } from "../repositories/postsRepository.js";
 import urlMetadata from "url-metadata";
 
@@ -85,6 +86,7 @@ export async function deletePost(req, res) {
     }
 
     await deletePostHashtagById(id);
+    await deleteLikesByPostId(id);
     await deletePostById(id);
 
     return res.sendStatus(STATUS_CODE.NO_CONTENT);
@@ -98,10 +100,11 @@ export async function editPost(req, res) {
   const { id } = req.params;
   const { text } = req.body;
   const { user } = res.locals;
+  console.log(id);
 
   try {
     const post = (await getPostById(id)).rows[0];
-
+    console.log(post);
     if (!post) {
       return res.sendStatus(STATUS_CODE.NOT_FOUND);
     }
