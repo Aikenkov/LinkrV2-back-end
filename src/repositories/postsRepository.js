@@ -36,9 +36,11 @@ export async function getPostsByUserId(id) {
   return connection.query(
     `
   SELECT
-  users.username,npx
+  users.username,
+  posts.id,
   pictures.picture_uri AS picture,
-  posts.text, 
+  posts.text,
+  posts.user_id, 
   posts.link,
   posts.created_at AS time
   FROM posts 
@@ -47,7 +49,7 @@ export async function getPostsByUserId(id) {
   JOIN pictures 
     ON pictures.user_id = users.id
   WHERE users.id=$1
-  GROUP BY users.username, pictures.picture_uri, posts.text, posts.link, posts.created_at
+  GROUP BY users.username, pictures.picture_uri, posts.id, posts.text, posts.link, posts.created_at, posts.user_id
   ORDER BY posts.created_at DESC
   LIMIT 20;
   `,
