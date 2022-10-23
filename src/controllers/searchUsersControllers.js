@@ -9,7 +9,7 @@ export async function getUsers(req,res){
         if(usernameRegistered){
 
         const registeredUsers = await connection.query(`
-            SELECT users.username, pictures.picture_uri FROM 
+            SELECT users.username, pictures.picture_uri, users.id FROM 
                 users 
             JOIN 
                 pictures
