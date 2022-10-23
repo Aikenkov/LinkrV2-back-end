@@ -84,8 +84,8 @@ export async function deletePost(req, res) {
       return res.sendStatus(STATUS_CODE.UNAUTHORIZED);
     }
 
-    await deletePostById(id);
     await deletePostHashtagById(id);
+    await deletePostById(id);
 
     return res.sendStatus(STATUS_CODE.NO_CONTENT);
   } catch (err) {
