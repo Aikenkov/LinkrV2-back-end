@@ -4,6 +4,6 @@ import { validateToken } from "../middlewares/authMiddleware.js";
 
 const userRouter = express.Router();
 
-userRouter.get("/users/:id", validateToken, getUserById);
+userRouter.get("/users/:id",  getUserById);
 
 export { userRouter };

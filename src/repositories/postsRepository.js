@@ -72,3 +72,7 @@ export async function deletePostHashtagById(id) {
 export async function editPostById(text, id) {
   return connection.query(`UPDATE posts SET text=$1 WHERE id=$2;`, [text, id]);
 }
+
+export async function deleteLikesByPostId(id) {
+  return connection.query(`DELETE FROM likes WHERE post_id=$1;`, [id]);
+}
