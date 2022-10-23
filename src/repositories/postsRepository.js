@@ -49,7 +49,7 @@ export async function getPostsByUserId(id) {
   JOIN pictures 
     ON pictures.user_id = users.id
   WHERE users.id=$1
-  GROUP BY users.username, pictures.picture_uri, posts.text, posts.link, posts.created_at, posts.user_id
+  GROUP BY users.username, pictures.picture_uri, posts.id, posts.text, posts.link, posts.created_at, posts.user_id
   ORDER BY posts.created_at DESC
   LIMIT 20;
   `,
