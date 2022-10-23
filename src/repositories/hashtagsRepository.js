@@ -57,7 +57,7 @@ export async function getPostsByTag(tag) {
     JOIN users ON users.id = posts.user_id
     JOIN pictures ON pictures.user_id = users.id
     WHERE hashtags.tag = $1
-    GROUP BY posts.id,users.id,pictures.picture_uri,posts.link, posts.created_at`,
+    GROUP BY posts.id,users.id,pictures.picture_uri,posts.link, posts.created_at, posts.user_id`,
         [tag]
     );
 }
