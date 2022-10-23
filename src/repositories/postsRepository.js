@@ -38,7 +38,8 @@ export async function getPostsByUserId(id) {
   SELECT
   users.username,
   pictures.picture_uri AS picture,
-  posts.text, 
+  posts.text,
+  posts.user_id, 
   posts.link,
   posts.created_at AS time
   FROM posts 
