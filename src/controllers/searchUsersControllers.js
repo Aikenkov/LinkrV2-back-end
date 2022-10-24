@@ -1,5 +1,6 @@
-import connection from "../database/database.js";
+
 import { STATUS_CODE } from "../enums/statusCode.js";
+import { getsearchUsers } from "../repositories/searchUsersRepository.js";
 
 export async function getUsers(req,res){
 
@@ -8,20 +9,7 @@ export async function getUsers(req,res){
 
         if(usernameRegistered){
 
-        const registeredUsers = await connection.query(`
-            SELECT users.username, pictures.picture_uri, users.id FROM 
-                users 
-            JOIN 
-                pictures
-            ON 
-                users.id = pictures.user_id
-            WHERE 
-                    lower(username)
-            LIKE 
-                lower($1);
-        `,[`%${usernameRegistered}%`]
-        );
-
+        const registeredUsers = await getsearchUsers(usernameRegistered)
 
         return res.status(STATUS_CODE.OK).send(registeredUsers.rows)
     }else{ 
