@@ -12,6 +12,7 @@ export async function getCommentsByPostId(post_id) {
         JOIN users ON comments.user_id = users.id
         JOIN pictures ON comments.user_id = pictures.user_id
         WHERE comments.post_id = $1
+        ORDER BY comments.id
     `,
         [post_id]
     );

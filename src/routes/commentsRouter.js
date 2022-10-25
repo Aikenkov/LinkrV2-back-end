@@ -12,7 +12,7 @@ const commentsRouter = Router();
 commentsRouter.get("/comments/:post_id", getPostComments);
 
 commentsRouter.post(
-    "/comments/:post_id",
+    "/comments",
     validateToken,
     validateSchema(postCommentSchema),
     insertComment

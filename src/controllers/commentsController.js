@@ -21,9 +21,8 @@ export async function getPostComments(req, res) {
 }
 
 export async function insertComment(req, res) {
-    const { post_id } = req.params;
     const user_id = res.locals.user;
-    const { text } = req.body;
+    const { text, post_id } = req.body;
 
     if (!post_id) {
         return res.sendStatus(STATUS_CODE.UNPROCESSABLE_ENTITY);
@@ -31,7 +30,7 @@ export async function insertComment(req, res) {
 
     try {
         await insertCommentByPostId(post_id, user_id, text);
-        return res.status(STATUS_CODE.OK).send(comments.rows);
+        return res.status(STATUS_CODE.OK).send("inserted");
     } catch (err) {
         console.log(err);
         res.sendStatus(STATUS_CODE.SERVER_ERROR);
