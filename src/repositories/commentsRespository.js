@@ -17,7 +17,7 @@ export async function getCommentsByPostId(post_id) {
     );
 }
 
-export async function insertComment(post_id, user_id, text) {
+export async function insertCommentByPostId(post_id, user_id, text) {
     return connection.query(
         `
         INSERT INTO comments (post_id, user_id, text)

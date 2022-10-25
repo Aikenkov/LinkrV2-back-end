@@ -1,7 +1,7 @@
 import { STATUS_CODE } from "../enums/statusCode.js";
 import {
     getCommentsByPostId,
-    insertComment,
+    insertCommentByPostId,
 } from "../repositories/commentsRespository.js";
 
 export async function getPostComments(req, res) {
@@ -30,7 +30,7 @@ export async function insertComment(req, res) {
     }
 
     try {
-        await insertComment(post_id, user_id, text);
+        await insertCommentByPostId(post_id, user_id, text);
         return res.status(STATUS_CODE.OK).send(comments.rows);
     } catch (err) {
         console.log(err);
