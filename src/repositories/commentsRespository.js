@@ -5,9 +5,9 @@ export async function getCommentsByPostId(post_id) {
         `
         SELECT 
         comments.user_id,
-        comments.text,
-        pictures.pictures_uri,
-        users.username
+        pictures.picture_uri,
+        users.username,
+        comments.text
         FROM comments
         JOIN users ON comments.user_id = users.id
         JOIN pictures ON comments.user_id = pictures.user_id
