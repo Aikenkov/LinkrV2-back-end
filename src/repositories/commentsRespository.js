@@ -16,3 +16,13 @@ export async function getCommentsByPostId(post_id) {
         [post_id]
     );
 }
+
+export async function insertComment(post_id, user_id, text) {
+    return connection.query(
+        `
+        INSERT INTO comments (post_id, user_id, text)
+        VALUES ( $1, $2, $3)
+    `,
+        [post_id, user_id, text]
+    );
+}
