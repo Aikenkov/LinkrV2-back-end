@@ -104,7 +104,7 @@ export async function editPost(req, res) {
 
   try {
     const post = (await getPostById(id)).rows[0];
-    
+
     if (!post) {
       return res.sendStatus(STATUS_CODE.NOT_FOUND);
     }
