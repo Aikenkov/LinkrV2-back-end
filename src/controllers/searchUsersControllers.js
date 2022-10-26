@@ -1,7 +1,7 @@
 
 import connection from "../database/database.js";
 import { STATUS_CODE } from "../enums/statusCode.js";
-import { getsearchUsers } from "../repositories/searchUsersRepository.js";
+import { getSearchFollowed, getsearchUsers } from "../repositories/searchUsersRepository.js";
 
 export async function getUsers(req,res){
 
@@ -26,12 +26,7 @@ export async function getUsersFollow(req,res){
 
     try {
         const user = res.locals.user
-        const idFollowed = await connection.query(`
-            SELECT followed FROM
-                follows
-            WHERE
-                follows.follower = ($1)
-        `,[user])
+        const idFollowed = await  getSearchFollowed(user)
         return res.status(STATUS_CODE.OK).send(idFollowed.rows)
         
     } catch (error) {
