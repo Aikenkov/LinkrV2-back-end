@@ -16,3 +16,13 @@ export async function getsearchUsers(name){
 `,[`%${name}%`]
 );
 }
+
+export async function getSearchFollowed(user){
+
+    return await connection.query(`
+    SELECT followed FROM
+        follows
+    WHERE
+        follows.follower = ($1)
+`,[user])
+}
