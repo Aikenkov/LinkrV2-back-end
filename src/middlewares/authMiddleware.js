@@ -9,7 +9,6 @@ export async function validateToken(req, res, next) {
         if (token) {
             session = (await getSessionByToken(token)).rows[0];
         }
-
         if (!token || !session) {
             return res.sendStatus(STATUS_CODE.UNAUTHORIZED);
         }
