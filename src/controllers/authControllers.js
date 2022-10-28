@@ -1,5 +1,4 @@
 import bcrypt from "bcrypt";
-import connection from "../database/database.js";
 import { v4 as uuid } from "uuid";
 import { STATUS_CODE } from "../enums/statusCode.js";
 import {
@@ -63,6 +62,7 @@ export async function postSignIn(req, res) {
                 token: token,
                 username: validUser.username,
                 url: userImage.rows[0].picture_uri,
+                id: validUser.id
             });
         } else {
             return res
