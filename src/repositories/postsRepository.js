@@ -103,6 +103,36 @@ export async function getSharedPosts(){
 `)
 }
 
+export async function getSharedPostsByUserId(id) {
+  return connection.query(
+    `
+    SELECT
+    posts.id,
+    posts.user_id,
+    "u1".username,
+    pictures.picture_uri AS picture,
+    posts.text, 
+    posts.link,
+    shares.created_at AS time,
+    "u2".username AS sharer
+  FROM posts 
+  JOIN users "u1"
+    ON posts.user_id = "u1".id
+  JOIN shares 
+    ON shares.post_id = posts.id
+  JOIN users "u2"
+    ON shares.user_id = "u2".id
+  JOIN pictures 
+    ON pictures.user_id = u1.id
+  WHERE shares.user_id=$1 
+  GROUP BY posts.id, "u1".username, pictures.picture_uri, posts.text, posts.link, shares.created_at, "u2".username
+  ORDER BY posts.id DESC
+  LIMIT 20;
+  `,
+    [id]
+  );
+}
+
 export async function shareUserPost(post_id, user_id){
   return connection.query(`INSERT INTO shares (post_id, user_id) VALUES ($1,$2)`, [post_id,user_id]);
 }

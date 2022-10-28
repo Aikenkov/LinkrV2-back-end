@@ -9,11 +9,10 @@ import {
   deleteLikesByPostId,
   getSharedPosts,
   deleteShareById,
+  getSharedPostsByUserId,
 } from "../repositories/postsRepository.js";
 import urlMetadata from "url-metadata";
-import dayjs from 'dayjs';
-import advancedFormat  from 'dayjs/plugin/advancedFormat.js';
-dayjs.extend(advancedFormat); 
+import orderArray from "../helpers/orderHelper.js";
 
 export async function getMetadata(req, res) {
   const { url } = req.body;
@@ -48,14 +47,7 @@ export async function getTimeline(req, res) {
     const timeline = await getLastsPosts();
     const sharedPosts = await getSharedPosts();
 
-    const posts = [...timeline.rows, ...sharedPosts.rows];
-    dayjs(posts[0].time).format('x')
-    posts.sort((a, b) => {
-      if (dayjs(a.time).format('x') < dayjs(b.time).format('x')) return 1;
-      if (dayjs(a.time).format('x') > dayjs(b.time).format('x')) return -1;
-      return 0;
-    })
-    return res.status(STATUS_CODE.OK).send(posts);
+    return res.status(STATUS_CODE.OK).send(orderArray([...timeline.rows, ...sharedPosts.rows]));
   } catch (err) {
     console.error(err);
     return res.sendStatus(STATUS_CODE.SERVER_ERROR);
@@ -66,7 +58,8 @@ export async function getUserPosts(req, res) {
   try {
     const { id } = req.params;
     const users = await getPostsByUserId(id);
-    return res.status(STATUS_CODE.OK).send(users.rows);
+    const sharedUserPosts = await getSharedPostsByUserId(id);
+    return res.status(STATUS_CODE.OK).send(orderArray([...users.rows, ...sharedUserPosts.rows]));
   } catch (err) {
     console.log(err);
     res.sendStatus(STATUS_CODE.SERVER_ERROR);
