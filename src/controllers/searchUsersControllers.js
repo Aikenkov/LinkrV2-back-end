@@ -26,6 +26,7 @@ export async function getUsers(req,res){
 
             allUsersFound.rows.forEach((userFound) => {
                 if(followedUsersId.includes(userFound.id)){
+                    userFound.type=' • following';
                     usersIFollow.push(userFound);
                 }
                 else{
