@@ -1,6 +1,6 @@
 import connection from "../database/database.js";
 
-export async function postValidateFollow(id,){ 
+export async function postValidateFollow(id){ 
     return await connection.query(`
     SELECT * FROM 
         users
@@ -19,8 +19,7 @@ export async function postFollowUsers(id,user){
 );
 }
 
-export async function deleteFollowUser(id,user){
-
+export async function deleteFollowUser(id, user){
     return  await connection.query(`
     DELETE FROM
         follows 
@@ -29,10 +28,14 @@ export async function deleteFollowUser(id,user){
 }
 
 export async function verifyfollow(id,user){
-
+    console.log(id, '******')
     return await connection.query(`
         SELECT * FROM 
             follows
         WHERE followed = $1 AND follower = $2
     `,[id,user])
+}
+
+export async function getFollowedUsers(id){
+    return connection.query(`SELECT * FROM follows WHERE follower=$1`,[id]);
 }

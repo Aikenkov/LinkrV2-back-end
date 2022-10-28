@@ -32,7 +32,6 @@ export async function postSignUp(req, res) {
         }
 
         const passwordHash = bcrypt.hashSync(password, 10);
-        console.log("entrando no insert");
         const newUserId = await insertUserId(username, email, passwordHash);
 
         await insertUserImage(url, newUserId.rows[0].id);

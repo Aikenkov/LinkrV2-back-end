@@ -7,8 +7,15 @@ import {
   editPostById,
   deletePostHashtagById,
   deleteLikesByPostId,
+  getSharedPosts,
+  deleteShareById,
+  getSharedPostsByUserId,
+  deleteCommentsByPostId,
 } from "../repositories/postsRepository.js";
 import urlMetadata from "url-metadata";
+import orderArray from "../helpers/orderHelper.js";
+import { getFollowedUsers } from "../repositories/followRepository.js";
+import arrayFilter from "../helpers/filterHelper.js";
 
 export async function getMetadata(req, res) {
   const { url } = req.body;
@@ -43,19 +50,17 @@ export async function getTimeline(req, res) {
   let posts;
 
   try {
-    const limit = 10;
-    const start = page * limit;
-    const end = limit * (page + 1);
-
-    const timeline = (await getLastsPosts()).rows;
-
-    if (timeline.length <= limit) {
-      posts = timeline;
-    } else {
-      posts = timeline.slice(start, end);
-    }
-
-    return res.status(STATUS_CODE.OK).send(posts);
+    const timeline = await getLastsPosts();
+    const sharedPosts = await getSharedPosts();
+    const following = await getFollowedUsers(res.locals.user);
+    console.log(res.locals.user);
+    const orderedArray = orderArray([...timeline.rows, ...sharedPosts.rows]);
+    const filteredArray = arrayFilter(
+      orderedArray,
+      following.rows,
+      res.locals.user
+    );
+    return res.status(STATUS_CODE.OK).send(filteredArray);
   } catch (err) {
     console.error("erro", err);
     return res.sendStatus(STATUS_CODE.SERVER_ERROR);
@@ -66,7 +71,10 @@ export async function getUserPosts(req, res) {
   try {
     const { id } = req.params;
     const users = await getPostsByUserId(id);
-    return res.status(STATUS_CODE.OK).send(users.rows);
+    const sharedUserPosts = await getSharedPostsByUserId(id);
+    return res
+      .status(STATUS_CODE.OK)
+      .send(orderArray([...users.rows, ...sharedUserPosts.rows]));
   } catch (err) {
     console.log(err);
     res.sendStatus(STATUS_CODE.SERVER_ERROR);
@@ -96,9 +104,11 @@ export async function deletePost(req, res) {
       return res.sendStatus(STATUS_CODE.UNAUTHORIZED);
     }
 
+    await deleteShareById(id);
     await deletePostHashtagById(id);
     await deleteLikesByPostId(id);
     await deletePostById(id);
+    await deleteCommentsByPostId(id);
 
     return res.sendStatus(STATUS_CODE.NO_CONTENT);
   } catch (err) {
