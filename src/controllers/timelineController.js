@@ -11,6 +11,7 @@ import {
   deleteShareById,
   getSharedPostsByUserId,
   deleteCommentsByPostId,
+  deleteSharesByPostId,
 } from "../repositories/postsRepository.js";
 import urlMetadata from "url-metadata";
 import orderArray from "../helpers/orderHelper.js";
@@ -40,7 +41,7 @@ export async function getMetadata(req, res) {
 
     return res.status(STATUS_CODE.CREATED).send(urlInfos);
   } catch (err) {
-    console.error(err);
+    console.error("aloo", err);
     return res.sendStatus(STATUS_CODE.SERVER_ERROR);
   }
 }
@@ -48,21 +49,51 @@ export async function getMetadata(req, res) {
 export async function getTimeline(req, res) {
   const { page } = req.query;
   let posts;
+  const limit = 10;
+  const start = page * limit;
+  const end = limit * (page + 1);
 
   try {
     const timeline = await getLastsPosts();
     const sharedPosts = await getSharedPosts();
     const following = await getFollowedUsers(res.locals.user);
-    console.log(res.locals.user);
+
     const orderedArray = orderArray([...timeline.rows, ...sharedPosts.rows]);
     const filteredArray = arrayFilter(
       orderedArray,
       following.rows,
       res.locals.user
     );
+
+    if (filteredArray.length <= limit) {
+      posts = filteredArray;
+    } else {
+      posts = filteredArray.slice(start, end);
+    }
+
+    return res.status(STATUS_CODE.OK).send(posts);
+  } catch (err) {
+    console.error(err);
+    return res.sendStatus(STATUS_CODE.SERVER_ERROR);
+  }
+}
+
+export async function getAllPosts(req, res) {
+  try {
+    const timeline = await getLastsPosts();
+    const sharedPosts = await getSharedPosts();
+    const following = await getFollowedUsers(res.locals.user);
+
+    const orderedArray = orderArray([...timeline.rows, ...sharedPosts.rows]);
+    const filteredArray = arrayFilter(
+      orderedArray,
+      following.rows,
+      res.locals.user
+    );
+
     return res.status(STATUS_CODE.OK).send(filteredArray);
   } catch (err) {
-    console.error("erro", err);
+    console.error(err);
     return res.sendStatus(STATUS_CODE.SERVER_ERROR);
   }
 }
@@ -109,6 +140,7 @@ export async function deletePost(req, res) {
     await deleteLikesByPostId(id);
     await deletePostById(id);
     await deleteCommentsByPostId(id);
+    await deleteSharesByPostId(id);
 
     return res.sendStatus(STATUS_CODE.NO_CONTENT);
   } catch (err) {
@@ -121,7 +153,6 @@ export async function editPost(req, res) {
   const { id } = req.params;
   const { text } = req.body;
   const { user } = res.locals;
-  console.log(id);
 
   try {
     const post = (await getPostById(id)).rows[0];

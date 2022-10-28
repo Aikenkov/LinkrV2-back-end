@@ -49,8 +49,7 @@ export async function getPostsByUserId(id) {
     ON pictures.user_id = users.id
   WHERE users.id=$1
   GROUP BY users.username, pictures.picture_uri, posts.id, posts.text, posts.link, posts.created_at, posts.user_id
-  ORDER BY posts.created_at DESC
-  LIMIT 20;
+  ORDER BY posts.created_at DESC;
   `,
     [id]
   );
@@ -80,6 +79,10 @@ export async function deleteCommentsByPostId(id) {
   return connection.query(`DELETE FROM comments WHERE post_id=$1;`, [id]);
 }
 
+export async function deleteSharesByPostId(id) {
+  return connection.query(`DELETE FROM shares WHERE post_id=$1;`, [id]);
+}
+
 export async function getSharedPosts(){
   return connection.query(`
   SELECT
@@ -102,8 +105,7 @@ export async function getSharedPosts(){
   JOIN pictures 
     ON pictures.user_id = u1.id
   GROUP BY posts.id, "u1".username, pictures.picture_uri, posts.text, posts.link, shares.created_at, "u2".username, shares.user_id
-  ORDER BY posts.id DESC
-  LIMIT 20;
+  ORDER BY posts.id DESC;
 `)
 }
 
