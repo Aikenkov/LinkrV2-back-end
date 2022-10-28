@@ -1,6 +1,6 @@
 
 import { STATUS_CODE } from "../enums/statusCode.js";
-import { deleteFollowUser, postFollowUsers,postValidateFollow,verifyfollow } from "../repositories/followRepository.js";
+import { deleteFollowUser, getFollowedUsers, postFollowUsers,postValidateFollow,verifyfollow } from "../repositories/followRepository.js";
 
 export async function postFollow(req,res){
 
@@ -57,3 +57,13 @@ try {
     return res.sendStatus(STATUS_CODE.SERVER_ERROR)
 }
  }
+
+export default async function getFollows(req, res){
+    try{
+        const following = await getFollowedUsers(res.locals.user);
+        res.status(STATUS_CODE.OK).send(following.rows);
+    }catch (err) {
+        console.log(err);
+        res.sendStatus(STATUS_CODE.SERVER_ERROR);
+    }
+}

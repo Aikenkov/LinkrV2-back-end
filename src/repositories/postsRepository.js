@@ -87,6 +87,7 @@ export async function getSharedPosts(){
     posts.text, 
     posts.link,
     shares.created_at AS time,
+    shares.user_id AS sharer_id,
     "u2".username AS sharer
   FROM posts 
   JOIN users "u1"
@@ -97,7 +98,7 @@ export async function getSharedPosts(){
     ON shares.user_id = "u2".id
   JOIN pictures 
     ON pictures.user_id = u1.id
-  GROUP BY posts.id, "u1".username, pictures.picture_uri, posts.text, posts.link, shares.created_at, "u2".username
+  GROUP BY posts.id, "u1".username, pictures.picture_uri, posts.text, posts.link, shares.created_at, "u2".username, shares.user_id
   ORDER BY posts.id DESC
   LIMIT 20;
 `)
@@ -114,6 +115,7 @@ export async function getSharedPostsByUserId(id) {
     posts.text, 
     posts.link,
     shares.created_at AS time,
+    shares.user_id AS sharer_id,
     "u2".username AS sharer
   FROM posts 
   JOIN users "u1"
@@ -125,7 +127,7 @@ export async function getSharedPostsByUserId(id) {
   JOIN pictures 
     ON pictures.user_id = u1.id
   WHERE shares.user_id=$1 
-  GROUP BY posts.id, "u1".username, pictures.picture_uri, posts.text, posts.link, shares.created_at, "u2".username
+  GROUP BY posts.id, "u1".username, pictures.picture_uri, posts.text, posts.link, shares.created_at, "u2".username, shares.user_id
   ORDER BY posts.id DESC
   LIMIT 20;
   `,

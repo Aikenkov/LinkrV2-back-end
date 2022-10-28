@@ -35,3 +35,7 @@ export async function verifyfollow(id,user){
         WHERE followed = $1 AND follower = $2
     `,[id,user])
 }
+
+export async function getFollowedUsers(id){
+    return connection.query(`SELECT * FROM follows WHERE follower=$1`,[id]);
+}

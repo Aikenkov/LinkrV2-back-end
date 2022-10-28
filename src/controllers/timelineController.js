@@ -13,6 +13,8 @@ import {
 } from "../repositories/postsRepository.js";
 import urlMetadata from "url-metadata";
 import orderArray from "../helpers/orderHelper.js";
+import { getFollowedUsers } from "../repositories/followRepository.js";
+import arrayFilter from "../helpers/filterHelper.js";
 
 export async function getMetadata(req, res) {
   const { url } = req.body;
@@ -46,8 +48,11 @@ export async function getTimeline(req, res) {
   try {
     const timeline = await getLastsPosts();
     const sharedPosts = await getSharedPosts();
-
-    return res.status(STATUS_CODE.OK).send(orderArray([...timeline.rows, ...sharedPosts.rows]));
+    const following = await getFollowedUsers(res.locals.user);
+    console.log(res.locals.user);
+    const orderedArray = orderArray([...timeline.rows, ...sharedPosts.rows]);
+    const filteredArray = arrayFilter(orderedArray, following.rows, res.locals.user);
+    return res.status(STATUS_CODE.OK).send(filteredArray);
   } catch (err) {
     console.error(err);
     return res.sendStatus(STATUS_CODE.SERVER_ERROR);
