@@ -70,7 +70,7 @@ export async function getTimeline(req, res) {
     } else {
       posts = filteredArray.slice(start, end);
     }
-
+    console.log(posts);
     return res.status(STATUS_CODE.OK).send(posts);
   } catch (err) {
     console.error(err);

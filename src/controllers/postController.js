@@ -46,7 +46,6 @@ export async function sharePost(req, res){
     try{
         const {post_id} = req.params;
         const post = await getPostById(post_id);
-        console.log(post_id,res.locals.user);
         if(post.rows.length === 0){
             return res.sendStatus(404);
         }
@@ -55,6 +54,7 @@ export async function sharePost(req, res){
         if(verifyRepost.rows.length !== 0){
             return res.sendStatus(422);
         }
+        console.log(post_id,res.locals.user);
         await shareUserPost(post_id,res.locals.user);
         return res.sendStatus(200);
     } catch (err){
