@@ -7,15 +7,40 @@ export async function getUsers(req,res){
 
     try {
         const usernameRegistered = req.query.name;
+        const user = res.locals.user;
 
         if(usernameRegistered){
 
-        const registeredUsers = await getsearchUsers(usernameRegistered)
+            const allUsersFound = await getsearchUsers(usernameRegistered);
 
-        return res.status(STATUS_CODE.OK).send(registeredUsers.rows)
-    }else{ 
-        return res.status(STATUS_CODE.NOT_FOUND).send('usuário não encontrado')
-    }
+            const followedUsers = await getSearchFollowed(user);
+            
+            let followedUsersId = [];
+
+            followedUsers.rows.forEach((user) => {
+                followedUsersId.push(user.followed);
+            });
+
+            let usersIFollow = [];
+            let usersIDontFollow = [];
+
+            allUsersFound.rows.forEach((userFound) => {
+                if(followedUsersId.includes(userFound.id)){
+                    usersIFollow.push(userFound);
+                }
+                else{
+                    usersIDontFollow.push(userFound);
+                }
+            });
+
+            let joinedUsers = [...usersIFollow, ...usersIDontFollow];
+
+            return res.status(STATUS_CODE.OK).send(joinedUsers);
+        }
+
+        else { 
+            return res.status(STATUS_CODE.NOT_FOUND).send('usuário não encontrado')
+        }
 
     } catch (error) {
         return res.sendStatus(STATUS_CODE.SERVER_ERROR)

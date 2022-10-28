@@ -18,7 +18,7 @@ export async function getsearchUsers(name){
 }
 
 export async function getSearchFollowed(user){
-
+    console.log('********', user)
     return await connection.query(`
     SELECT followed FROM
         follows

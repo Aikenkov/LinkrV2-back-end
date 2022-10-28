@@ -28,7 +28,7 @@ export async function deleteFollowUser(id, user){
 }
 
 export async function verifyfollow(id,user){
-
+    console.log(id, '******')
     return await connection.query(`
         SELECT * FROM 
             follows

@@ -6,6 +6,6 @@ import { validateToken } from '../middlewares/authMiddleware.js';
 
 const searchUsers = Router();
 
-searchUsers.get("/search", getUsers);
+searchUsers.get("/search", validateToken, getUsers);
 searchUsers.get("/followed", validateToken, getUsersFollow )
 export{ searchUsers }
