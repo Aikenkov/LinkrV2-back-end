@@ -17,8 +17,7 @@ export async function getLastsPosts() {
     JOIN pictures 
       ON pictures.user_id = users.id
     GROUP BY posts.id, users.username, pictures.picture_uri, posts.text, posts.link, posts.created_at
-    ORDER BY posts.id DESC
-    LIMIT 20;
+    ORDER BY posts.id DESC;
   `
   );
 }

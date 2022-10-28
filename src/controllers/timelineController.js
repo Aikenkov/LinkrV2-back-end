@@ -39,14 +39,25 @@ export async function getMetadata(req, res) {
 }
 
 export async function getTimeline(req, res) {
-  try {
-    const timeline = await getLastsPosts();
+  const { page } = req.query;
+  let posts;
 
-    const posts = timeline.rows;
+  try {
+    const limit = 10;
+    const start = page * limit;
+    const end = limit * (page + 1);
+
+    const timeline = (await getLastsPosts()).rows;
+
+    if (timeline.length <= limit) {
+      posts = timeline;
+    } else {
+      posts = timeline.slice(start, end);
+    }
 
     return res.status(STATUS_CODE.OK).send(posts);
   } catch (err) {
-    console.error(err);
+    console.error("erro", err);
     return res.sendStatus(STATUS_CODE.SERVER_ERROR);
   }
 }
