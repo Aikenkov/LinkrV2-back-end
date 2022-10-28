@@ -156,3 +156,10 @@ export async function getSharesByPost(post_id){
 export async function deleteShareById(post_id){
   return connection.query(`DELETE FROM shares WHERE post_id=$1`, [post_id])
 }
+
+export async function getSharedPostByPostAndUserId(post_id, user_id){
+  return connection.query(`
+  SELECT * FROM shares
+  WHERE post_id=$1 AND user_id=$2
+  `,[post_id, user_id]);
+}
