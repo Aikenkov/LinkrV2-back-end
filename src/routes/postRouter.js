@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { publishPost } from "../controllers/postController.js";
+import { getSharesNumber, publishPost, sharePost } from "../controllers/postController.js";
 import { validateToken } from "../middlewares/authMiddleware.js";
 import { publishSchema } from "../schemas/publishSchema.js";
 import { validateSchema } from "../middlewares/schemaValidatorMiddleware.js";
@@ -12,5 +12,7 @@ postRouter.post(
     validateSchema(publishSchema),
     publishPost
 );
+postRouter.post("/share/:post_id", validateToken ,sharePost);
+postRouter.get("/share/:post_id", validateToken, getSharesNumber);
 
 export { postRouter };

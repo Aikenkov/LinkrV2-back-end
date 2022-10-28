@@ -7,8 +7,13 @@ import {
   editPostById,
   deletePostHashtagById,
   deleteLikesByPostId,
+  getSharedPosts,
+  deleteShareById,
 } from "../repositories/postsRepository.js";
 import urlMetadata from "url-metadata";
+import dayjs from 'dayjs';
+import advancedFormat  from 'dayjs/plugin/advancedFormat.js';
+dayjs.extend(advancedFormat); 
 
 export async function getMetadata(req, res) {
   const { url } = req.body;
@@ -41,9 +46,15 @@ export async function getMetadata(req, res) {
 export async function getTimeline(req, res) {
   try {
     const timeline = await getLastsPosts();
+    const sharedPosts = await getSharedPosts();
 
-    const posts = timeline.rows;
-
+    const posts = [...timeline.rows, ...sharedPosts.rows];
+    dayjs(posts[0].time).format('x')
+    posts.sort((a, b) => {
+      if (dayjs(a.time).format('x') < dayjs(b.time).format('x')) return 1;
+      if (dayjs(a.time).format('x') > dayjs(b.time).format('x')) return -1;
+      return 0;
+    })
     return res.status(STATUS_CODE.OK).send(posts);
   } catch (err) {
     console.error(err);
@@ -85,6 +96,7 @@ export async function deletePost(req, res) {
       return res.sendStatus(STATUS_CODE.UNAUTHORIZED);
     }
 
+    await deleteShareById(id);
     await deletePostHashtagById(id);
     await deleteLikesByPostId(id);
     await deletePostById(id);
